@@ -61,6 +61,7 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
     }
 
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+
         if (viewHolder != null) {
             final View foregroundView = ((MyAdapterRecyclerView.MyViewHolder) viewHolder).viewForeground;
 
