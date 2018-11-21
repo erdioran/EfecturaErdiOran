@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.erdioran.efectura.Interfaces.CallbackItemTouch;
 import com.erdioran.efectura.Model.Item;
@@ -37,7 +38,7 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
-            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT; // movements drag
+            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN ; // movements drag
             final int swipeFlags = 0;
             return makeMovementFlags(dragFlags, swipeFlags); // as parameter, action drag and flags drag
         } else {

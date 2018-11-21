@@ -1,7 +1,5 @@
 package com.erdioran.efectura.Model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Item {
 

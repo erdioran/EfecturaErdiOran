@@ -53,11 +53,7 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
         holder.Cur_DateStart.setText(String.valueOf(item.getCur_DateStart()));
         holder.Cur_DateEnd.setText(String.valueOf(item.getCur_DateEnd()));
 
-        if (position %2==1){
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        }else {
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
-        }
+
 
 
 
@@ -107,10 +103,6 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
 
 
 
-//        public void setCur_ParentID(int cur_parentID) {
-//            Cur_ParentID.setText(String.valueOf(cur_parentID));
-//        }
-
         public void onItemSelected() {
             itemView.setBackgroundColor(Color.LTGRAY);
         }
@@ -122,15 +114,6 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
 
     }
 
-    public void removeItem(int position) {
-        mList.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    public void restoreItem(Item item, int position) {
-        mList.add(position, item);
-        notifyItemInserted(position);
-    }
 
 
 }
