@@ -6,7 +6,8 @@
     <color name="bg_row_background">#fa315b</color>
     <color name="item1">#535353</color>
     <color name="description">#a9a9a9</color>
-
+    <color name="textlight">#546e7a</color>
     <color name="actionbar_color">#f7d1ced0</color>
     <color name="actionbar_text">#292929</color>
+    <color name="white">#ffffff</color>
 </resources>

@@ -1,12 +1,12 @@
 package com.erdioran.efectura.Adapter;
 
-import android.database.Observable;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +19,7 @@ import java.util.List;
 public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecyclerView.MyViewHolder> {
 
     private List<Item> mList;
+    private Context context;
 
 
 
@@ -31,6 +32,8 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
         return new MyViewHolder(view);
     }
+
+
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
@@ -57,7 +60,6 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
 
 
 
-
     }
 
     @Override
@@ -73,7 +75,7 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
 
         public RelativeLayout viewForeground, viewBackground;
         TextView Cur_ID, Cur_Name,Cur_Scale,Cur_DateEnd,Cur_DateStart,Cur_Periodicity,Cur_Abbreviation,Cur_NameMulti,Cur_Name_EngMulti,Cur_Name_BelMulti,Cur_QuotName_Bel,Cur_QuotName_Eng, Cur_Code, Cur_ParentID,Cur_Name_Bel,Cur_Name_Eng,Cur_QuotName;
-
+        protected ImageView ivReorder;
         public MyViewHolder(View itemView) {
             super(itemView);
 
@@ -95,8 +97,7 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
             Cur_DateStart = (TextView) itemView.findViewById(R.id.textview7);
             Cur_DateEnd = (TextView) itemView.findViewById(R.id.textview8);
 
-
-           viewForeground = itemView.findViewById(R.id.view_foreground);
+            viewForeground = itemView.findViewById(R.id.view_foreground);
            viewBackground = itemView.findViewById(R.id.view_background);
 
         }
@@ -105,11 +106,11 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
 
         public void onItemSelected() {
             itemView.setBackgroundColor(Color.LTGRAY);
-        }
+             }
 
         public void onItemClear() {
             itemView.setBackgroundColor(Color.LTGRAY);
-        }
+             }
 
 
     }

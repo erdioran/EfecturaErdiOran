@@ -1,13 +1,19 @@
 package com.erdioran.efectura;
 
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.NestedScrollView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,8 +21,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -36,18 +40,18 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CallbackItemTouch {
+public class MainActivity extends AppCompatActivity implements CallbackItemTouch, LocationListener {
     private RecyclerView mRecyclerView;
     private MyAdapterRecyclerView myAdapterRecyclerView;
     private List<Item> mList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private Location mLastLocation;
+    private LocationManager locationManager;
     private GoogleApiClient mGoogleApiClient;
     private Menu menu;
     private FloatingActionButton fab;
-    private String appVer;
+    private String appVer, longitude, latitude, provider;
 
 
     @Override
@@ -59,14 +63,16 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         fab = findViewById(R.id.fab);
 
+
         fabButton();
         data();
         recyclerView();
-
-        appVer=(BuildConfig.APPLICATION_ID+" | v" + BuildConfig.VERSION_NAME);
-        Log.d("zzzzz",appVer);
+        latLog();
 
 
+
+        appVer = (BuildConfig.APPLICATION_ID + " | v" + BuildConfig.VERSION_NAME);
+        Log.d("zzzzz", appVer);
 
 
 //        btnSendMail.setOnClickListener(new View.OnClickListener()
@@ -88,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
 
     }
 
-    private void recyclerView(){
+    private void recyclerView() {
         mList = new ArrayList<>();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // Set LayoutManager in the RecyclerView
         mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
@@ -135,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
                         if (response == null) {
                             Toast.makeText(getApplicationContext(), "Couldn't fetch the menu! Pleas try again.", Toast.LENGTH_LONG).show();
                             return;
+
                         }
 
                         List<Item> items = new Gson().fromJson(response.toString(), new TypeToken<List<Item>>() {
@@ -178,8 +185,76 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
         });
     }
 
+    public void latLog() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setCostAllowed(false);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setSpeedRequired(false);
+        provider = locationManager.getBestProvider(criteria, false);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            onLocationChanged(location);
+        } else {
+            Log.d("xxxxx", "bulunamadı");
+        }
+    }
+
 
     @Override
+    public void onLocationChanged(Location location) {
+
+        double lat = location.getLatitude();
+        double lon = location.getLongitude();
+        Log.d("aaaaa", "aaa");
+        Log.d("abbbbaaaa", String.valueOf(lon));
+        /* textenlem.setText(String.valueOf(log));*/
+   /*     String latlon=latlongdetail(lat,lon);*/
+
+    }
+
+/*    public String latlongdetail(Double lat2,Double lon2){
+List<Adress> adress=
+    }*/
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Toast.makeText(this, "Enable Provider", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Toast.makeText(this, "Disable Provider", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        locationManager.requestLocationUpdates(provider, 100, 1, this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(this);
+    }
+
+
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         MenuInflater inflater = getMenuInflater();
@@ -202,5 +277,5 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
     public void sendMail() {
         Intent intent = new Intent(getApplicationContext(), FloatingActionButtonActivity.class);
         startActivity(intent);
-    }
+    }*/
 }
