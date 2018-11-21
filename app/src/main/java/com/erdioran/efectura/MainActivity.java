@@ -1,15 +1,25 @@
 package com.erdioran.efectura;
 
 
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -17,9 +27,12 @@ import com.erdioran.efectura.Adapter.MyAdapterRecyclerView;
 import com.erdioran.efectura.Adapter.MyItemTouchHelperCallback;
 import com.erdioran.efectura.Interfaces.CallbackItemTouch;
 import com.erdioran.efectura.Model.Item;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +43,12 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
     private SwipeRefreshLayout swipeRefreshLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private Location mLastLocation;
+    private GoogleApiClient mGoogleApiClient;
+    private Menu menu;
+    private FloatingActionButton fab;
+    private String appVer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +57,38 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        fab = findViewById(R.id.fab);
+
+        fabButton();
         data();
+        recyclerView();
+
+        appVer=(BuildConfig.APPLICATION_ID+" | v" + BuildConfig.VERSION_NAME);
+        Log.d("zzzzz",appVer);
 
 
+
+
+//        btnSendMail.setOnClickListener(new View.OnClickListener()
+//        {
+//            public void onClick(View v)
+//            {
+//                String phoneNo = txtMail.getText().toString();
+//
+//                displayLocation();
+//                if (phoneNo.length()>0 && message.length()>0)
+//                    sendEmail(phoneNo, message);
+//                else
+//                    Toast.makeText(getBaseContext(),
+//                            "Please enter both phone number and message.",
+//                            Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+
+    }
+
+    private void recyclerView(){
         mList = new ArrayList<>();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // Set LayoutManager in the RecyclerView
         mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
@@ -49,6 +97,18 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
         ItemTouchHelper.Callback callback = new MyItemTouchHelperCallback((CallbackItemTouch) this);// create MyItemTouchHelperCallback
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback); // Create ItemTouchHelper and pass with parameter the MyItemTouchHelperCallback
         touchHelper.attachToRecyclerView(mRecyclerView);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
 
         swipeRefreshLayout = findViewById(R.id.swipe_container);
@@ -62,10 +122,9 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
                         swipeRefreshLayout.setRefreshing(false);
                         data();
                     }
-                },2000);
+                }, 500);
             }
         });
-
     }
 
     private void data() {
@@ -109,4 +168,39 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
         myAdapterRecyclerView.notifyItemRemoved(position);
     }
 
+    public void fabButton() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FloatingActionButton.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actions_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.send:
+                sendMail();
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    public void sendMail() {
+        Intent intent = new Intent(getApplicationContext(), FloatingActionButtonActivity.class);
+        startActivity(intent);
+    }
 }

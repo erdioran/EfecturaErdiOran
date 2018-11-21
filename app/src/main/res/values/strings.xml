@@ -3,4 +3,7 @@
     <string name="actions_setting">Setting</string>
     <string name="my_cart">My Cart</string>
     <string name="delete">Delete</string>
+    <string name="send">Send</string>
+    <string name="send_email">Send Email</string>
+    <string name="email">Mail</string>
 </resources>
