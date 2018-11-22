@@ -36,9 +36,11 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/pad10">
 
         <Button
+            android:background="@color/white"
             android:layout_marginLeft="@dimen/pad10"
             android:layout_marginRight="@dimen/pad10"
             android:text="@string/cancel"
@@ -47,6 +49,7 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:background="@color/white"
             android:layout_marginRight="@dimen/pad10"
             android:text="@string/send"
             android:id="@+id/sendBtn"
