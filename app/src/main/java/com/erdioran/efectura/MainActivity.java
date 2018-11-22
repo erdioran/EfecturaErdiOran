@@ -166,7 +166,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.setType("text/email");
+                email.putExtra(Intent.EXTRA_EMAIL, "erdioran@gmail.com");
+                email.putExtra(Intent.EXTRA_EMAIL, "");
+                email.putExtra(Intent.EXTRA_TEXT, appVer);
+                startActivity(Intent.createChooser(email, "Send info"));
+                /*LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                 View customView = inflater.inflate(R.layout.custom_layout, null);
                 mPopupWindow = new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 mPopupWindow.setFocusable(true);
@@ -196,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 });
 
 
-                mPopupWindow.showAtLocation(frameLayout, Gravity.CENTER, 0, 0);
+                mPopupWindow.showAtLocation(frameLayout, Gravity.CENTER, 0, 0);*/
             }
         });
     }

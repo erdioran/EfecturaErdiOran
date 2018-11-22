@@ -16,7 +16,7 @@ import com.erdioran.efectura.Interfaces.ItemTouchHelperAdapter;
 import com.erdioran.efectura.Interfaces.ItemTouchHelperViewHolder;
 import com.erdioran.efectura.Interfaces.OnStartDragListener;
 import com.erdioran.efectura.Model.Item;
-import com.erdioran.efectura.R;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +44,13 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         Item item = mList.get(position);
+        holder.setIsRecyclable(true);
+        if (position % 2 == 0)
+        {
+            holder.viewForeground.setBackgroundColor(R.color);
+        }else{
+            holder.viewForeground.setBackgroundColor(000000);
+        }
         holder.Cur_ID.setText(String.valueOf(item.getCur_ID()));
         holder.Cur_ParentID.setText(String.valueOf(item.getCur_ParentID()));
         holder.Cur_Code.setText(item.getCur_Code());
