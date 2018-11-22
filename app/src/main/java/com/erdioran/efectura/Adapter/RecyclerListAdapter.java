@@ -1,5 +1,6 @@
 package com.erdioran.efectura.Adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +40,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
         return itemViewHolder;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         Item item = mList.get(position);

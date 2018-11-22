@@ -3,7 +3,6 @@ package com.erdioran.efectura;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -14,11 +13,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,9 +23,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -41,7 +36,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.erdioran.efectura.Adapter.RecyclerListAdapter;
 import com.erdioran.efectura.Adapter.SimpleItemTouchHelperCallback;
-import com.erdioran.efectura.Interfaces.ItemTouchHelperAdapter;
 import com.erdioran.efectura.Interfaces.OnStartDragListener;
 import com.erdioran.efectura.Model.Item;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -60,10 +54,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private List<Item> mList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
-    private FloatingActionButton fab;
+    private FloatingActionButton fab,fabUp;
 
     private EditText editTextMail;
-    private Button cancelButton;
+    private Button cancelButton, sendButton;
     private PopupWindow mPopupWindow;
     private FrameLayout frameLayout;
 
@@ -78,19 +72,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        appVer = (BuildConfig.APPLICATION_ID + " | v" + BuildConfig.VERSION_NAME);
         recyclerView = findViewById(R.id.recycler_view);
         fab = findViewById(R.id.fab);
-        frameLayout=findViewById(R.id.frameLayout);
+        fabUp=findViewById(R.id.upFab);
+        frameLayout = findViewById(R.id.frameLayout);
 
-
+        fabUpButton();
         fabButton();
         data();
         recyclerView();
         latLog();
 
 
-        appVer = (BuildConfig.APPLICATION_ID + " | v" + BuildConfig.VERSION_NAME);
         Log.d("zzzzz", appVer);
 
     }
@@ -167,31 +161,56 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     public void fabButton() {
 
-        editTextMail=findViewById(R.id.editTextMail);
+        editTextMail = findViewById(R.id.editTextMail);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LayoutInflater inflater= (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                View customView=inflater.inflate(R.layout.custom_layout,null);
-                mPopupWindow=new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                View customView = inflater.inflate(R.layout.custom_layout, null);
+                mPopupWindow = new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 mPopupWindow.setFocusable(true);
                 mPopupWindow.update();
-                if (Build.VERSION.SDK_INT>=21){
+                if (Build.VERSION.SDK_INT >= 21) {
                     mPopupWindow.setElevation(5.0f);
                 }
 
-                cancelButton=(Button)customView.findViewById(R.id.cancelBtn);
+                cancelButton = (Button) customView.findViewById(R.id.cancelBtn);
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         mPopupWindow.dismiss();
                     }
                 });
+                sendButton = (Button) customView.findViewById(R.id.sendBtn);
+                sendButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent email = new Intent(Intent.ACTION_SEND);
+                        email.setType("text/email");
+                        email.putExtra(Intent.EXTRA_EMAIL, "erdioran@gmail.com");
+                        email.putExtra(Intent.EXTRA_EMAIL, "");
+                        email.putExtra(Intent.EXTRA_TEXT, appVer);
+                        startActivity(Intent.createChooser(email, "Send info"));
+                    }
+                });
 
-                mPopupWindow.showAtLocation(frameLayout,Gravity.CENTER,0,0);
+
+                mPopupWindow.showAtLocation(frameLayout, Gravity.CENTER, 0, 0);
             }
         });
+    }
+
+
+    public void fabUpButton() {
+        fabUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayoutManager  layoutManager =(LinearLayoutManager)recyclerView.getLayoutManager();
+                layoutManager.scrollToPositionWithOffset(0,0);
+            }
+        });
+    }
 
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -204,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 //                startActivity(Intent.createChooser(email, "Send info"));
 //            }
 //        });
-    }
+
 
     public void latLog() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

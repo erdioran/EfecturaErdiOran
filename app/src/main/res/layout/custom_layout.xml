@@ -2,17 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/gray"
     android:orientation="vertical"
-
     android:padding="2dp"
-    android:background="@color/popupBackground">
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center_horizontal"
-        >
+        android:layout_weight="0.7"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textViewMail"
@@ -20,41 +20,48 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:text="@string/enterMail" />
+            android:text="@string/enterMail"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editTextMail"
-            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:inputType="textEmailAddress"
             android:ems="12"
-            android:maxLines="1" />
+            android:textAlignment="center"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/pad10">
+        android:layout_marginTop="@dimen/pad15"
+        android:layout_marginBottom="@dimen/pad15"
+        android:layout_weight="0.3"
+        android:orientation="horizontal">
 
         <Button
-            android:background="@color/white"
-            android:layout_marginLeft="@dimen/pad10"
-            android:layout_marginRight="@dimen/pad10"
-            android:text="@string/cancel"
             android:id="@+id/cancelBtn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pad30"
+            android:layout_marginRight="@dimen/pad30"
+            android:background="@color/white"
+            android:text="@string/cancel" />
 
         <Button
-            android:background="@color/white"
-            android:layout_marginRight="@dimen/pad10"
-            android:text="@string/send"
             android:id="@+id/sendBtn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/pad30"
+            android:background="@color/white"
+            android:text="@string/send" />
     </LinearLayout>
 
 </LinearLayout>
