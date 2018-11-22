@@ -1,42 +1,46 @@
 package com.erdioran.efectura.Adapter;
 
-import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.erdioran.efectura.Interfaces.ItemTouchHelperAdapter;
 import com.erdioran.efectura.Interfaces.ItemTouchHelperViewHolder;
+import com.erdioran.efectura.Interfaces.OnStartDragListener;
 import com.erdioran.efectura.Model.Item;
 import com.erdioran.efectura.R;
 
+import java.util.Collections;
 import java.util.List;
 
-public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecyclerView.MyViewHolder> {
-
+public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapter.ItemViewHolder>
+        implements ItemTouchHelperAdapter {
     private List<Item> mList;
-    private Context context;
 
+    private final OnStartDragListener mDragStartListener;
 
+    public RecyclerListAdapter(List<Item> mList,OnStartDragListener dragStartListener) {
 
-    public MyAdapterRecyclerView(List<Item> mList) {
-        this.mList = mList;
+        this.mList=mList;
+        mDragStartListener = dragStartListener;
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-        return new MyViewHolder(view);
+        ItemViewHolder itemViewHolder = new ItemViewHolder(view);
+        return itemViewHolder;
     }
 
-
-
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final ItemViewHolder holder, int position) {
         Item item = mList.get(position);
         holder.Cur_ID.setText(String.valueOf(item.getCur_ID()));
         holder.Cur_ParentID.setText(String.valueOf(item.getCur_ParentID()));
@@ -59,7 +63,29 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
 
 
 
+        // Start a drag whenever the handle view it touched
+        holder.handleView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    mDragStartListener.onStartDrag(holder);
+                }
+                return false;
+            }
+        });
+    }
 
+    @Override
+    public void onItemDismiss(int position) {
+        mList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(mList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
     }
 
     @Override
@@ -69,16 +95,19 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
         } else {
             return mList.size();
         }
+//        return mItems.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+
+    public static class ItemViewHolder extends RecyclerView.ViewHolder implements
+            ItemTouchHelperViewHolder {
 
         public RelativeLayout viewForeground, viewBackground;
         TextView Cur_ID, Cur_Name,Cur_Scale,Cur_DateEnd,Cur_DateStart,Cur_Periodicity,Cur_Abbreviation,Cur_NameMulti,Cur_Name_EngMulti,Cur_Name_BelMulti,Cur_QuotName_Bel,Cur_QuotName_Eng, Cur_Code, Cur_ParentID,Cur_Name_Bel,Cur_Name_Eng,Cur_QuotName;
-        protected ImageView ivReorder;
-        public MyViewHolder(View itemView) {
-            super(itemView);
+        public final ImageView handleView;
 
+        public ItemViewHolder(View itemView) {
+            super(itemView);
             Cur_ID = (TextView) itemView.findViewById(R.id.textview1);
             Cur_ParentID = (TextView) itemView.findViewById(R.id.textview2);
             Cur_Code = (TextView) itemView.findViewById(R.id.textview3);
@@ -98,23 +127,18 @@ public class MyAdapterRecyclerView extends RecyclerView.Adapter<MyAdapterRecycle
             Cur_DateEnd = (TextView) itemView.findViewById(R.id.textview8);
 
             viewForeground = itemView.findViewById(R.id.view_foreground);
-           viewBackground = itemView.findViewById(R.id.view_background);
-
+            viewBackground = itemView.findViewById(R.id.view_background);
+            handleView = (ImageView) itemView.findViewById(R.id.handle);
         }
 
-
-
+        @Override
         public void onItemSelected() {
             itemView.setBackgroundColor(Color.LTGRAY);
-             }
+        }
 
+        @Override
         public void onItemClear() {
-            itemView.setBackgroundColor(Color.LTGRAY);
-             }
-
-
+            itemView.setBackgroundColor(0);
+        }
     }
-
-
-
 }

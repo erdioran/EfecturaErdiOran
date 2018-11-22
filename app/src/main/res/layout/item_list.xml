@@ -140,6 +140,13 @@
                         android:textColor="@color/item1"
                         android:textSize="12sp" />
                 </LinearLayout>
+                <ImageView
+                    android:id="@+id/handle"
+                    android:layout_width="?listPreferredItemHeight"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|right"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_reorder_grey_500_24dp" />
 
             </LinearLayout>
 
@@ -248,7 +255,9 @@
                 </LinearLayout>
 
 
+
             </LinearLayout>
+
 
         </LinearLayout>
 

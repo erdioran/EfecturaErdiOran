@@ -27,9 +27,10 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.erdioran.efectura.Adapter.MyAdapterRecyclerView;
-import com.erdioran.efectura.Adapter.MyItemTouchHelperCallback;
-import com.erdioran.efectura.Interfaces.CallbackItemTouch;
+import com.erdioran.efectura.Adapter.RecyclerListAdapter;
+import com.erdioran.efectura.Adapter.SimpleItemTouchHelperCallback;
+import com.erdioran.efectura.Interfaces.ItemTouchHelperAdapter;
+import com.erdioran.efectura.Interfaces.OnStartDragListener;
 import com.erdioran.efectura.Model.Item;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
@@ -40,17 +41,18 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CallbackItemTouch, LocationListener {
-    private RecyclerView mRecyclerView;
-    private MyAdapterRecyclerView myAdapterRecyclerView;
+public class MainActivity extends AppCompatActivity implements LocationListener, OnStartDragListener {
+    private RecyclerView recyclerView;
+    private ItemTouchHelper mItemTouchHelper;
+    private RecyclerListAdapter adapter;
     private List<Item> mList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
+    private FloatingActionButton fab;
+
 
     private LocationManager locationManager;
     private GoogleApiClient mGoogleApiClient;
-    private Menu menu;
-    private FloatingActionButton fab;
     private String appVer, longitude, latitude, provider;
 
 
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
         setContentView(R.layout.activity_main);
 
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         fab = findViewById(R.id.fab);
 
 
@@ -70,40 +72,21 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
         latLog();
 
 
-
         appVer = (BuildConfig.APPLICATION_ID + " | v" + BuildConfig.VERSION_NAME);
         Log.d("zzzzz", appVer);
-
-
-//        btnSendMail.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View v)
-//            {
-//                String phoneNo = txtMail.getText().toString();
-//
-//                displayLocation();
-//                if (phoneNo.length()>0 && message.length()>0)
-//                    sendEmail(phoneNo, message);
-//                else
-//                    Toast.makeText(getBaseContext(),
-//                            "Please enter both phone number and message.",
-//                            Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
 
     }
 
     private void recyclerView() {
         mList = new ArrayList<>();
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // Set LayoutManager in the RecyclerView
-        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-        myAdapterRecyclerView = new MyAdapterRecyclerView(mList); // Create Instance of MyAdapterRecyclerView
-        mRecyclerView.setAdapter(myAdapterRecyclerView); // Set Adapter for RecyclerView
-        ItemTouchHelper.Callback callback = new MyItemTouchHelperCallback((CallbackItemTouch) this);// create MyItemTouchHelperCallback
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback); // Create ItemTouchHelper and pass with parameter the MyItemTouchHelperCallback
-        touchHelper.attachToRecyclerView(mRecyclerView);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new RecyclerListAdapter(mList, (OnStartDragListener) this);
+        recyclerView.setAdapter(adapter);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -150,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
                         mList.clear();
                         mList.addAll(items);
 
-                        myAdapterRecyclerView.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -163,24 +146,17 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
         MyApplication.getInstance().addToRequestQueue(request);
     }
 
-    @Override
-    public void itemTouchOnMove(int oldPosition, int newPosition) {
-        mList.add(newPosition, mList.remove(oldPosition));
-        myAdapterRecyclerView.notifyItemMoved(oldPosition, newPosition);
-    }
-
-    @Override
-    public void onItemDismiss(int position) {
-        mList.remove(position);
-        myAdapterRecyclerView.notifyItemRemoved(position);
-    }
 
     public void fabButton() {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, FloatingActionButton.class);
-                startActivity(intent);
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.setType("text/email");
+                email.putExtra(Intent.EXTRA_EMAIL, "erdioran@gmail.com");
+                email.putExtra(Intent.EXTRA_EMAIL, "");
+                email.putExtra(Intent.EXTRA_TEXT, appVer);
+                startActivity(Intent.createChooser(email, "Send info"));
             }
         });
     }
@@ -214,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements CallbackItemTouch
         Log.d("aaaaa", "aaa");
         Log.d("abbbbaaaa", String.valueOf(lon));
         /* textenlem.setText(String.valueOf(log));*/
-   /*     String latlon=latlongdetail(lat,lon);*/
+        /*     String latlon=latlongdetail(lat,lon);*/
 
     }
 
@@ -251,6 +227,11 @@ List<Adress> adress=
     protected void onPause() {
         super.onPause();
         locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 
 
