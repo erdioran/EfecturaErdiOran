@@ -6,4 +6,6 @@
     <string name="send">Send</string>
     <string name="send_email">Send Email</string>
     <string name="email">Mail</string>
+    <string name="enterMail">Enter your email</string>
+    <string name="cancel">Cancel</string>
 </resources>
