@@ -16,7 +16,7 @@ import com.erdioran.efectura.Interfaces.ItemTouchHelperAdapter;
 import com.erdioran.efectura.Interfaces.ItemTouchHelperViewHolder;
 import com.erdioran.efectura.Interfaces.OnStartDragListener;
 import com.erdioran.efectura.Model.Item;
-
+import com.erdioran.efectura.R;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,17 +40,17 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
         return itemViewHolder;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "ResourceAsColor"})
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         Item item = mList.get(position);
-        holder.setIsRecyclable(true);
-        if (position % 2 == 0)
-        {
-            holder.viewForeground.setBackgroundColor(R.color);
-        }else{
-            holder.viewForeground.setBackgroundColor(000000);
-        }
+//        holder.setIsRecyclable(true);
+//        if (position % 2 == 0)
+//        {
+//            holder.viewForeground.setBackgroundColor(R.color.item);
+//        }else{
+//            holder.viewForeground.setBackgroundColor(000000);
+//        }
         holder.Cur_ID.setText(String.valueOf(item.getCur_ID()));
         holder.Cur_ParentID.setText(String.valueOf(item.getCur_ParentID()));
         holder.Cur_Code.setText(item.getCur_Code());
@@ -92,6 +92,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
+
         Collections.swap(mList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
         return true;
@@ -111,7 +112,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements
             ItemTouchHelperViewHolder {
 
-        public RelativeLayout viewForeground, viewBackground;
+        public RelativeLayout viewForeground;
         TextView Cur_ID, Cur_Name,Cur_Scale,Cur_DateEnd,Cur_DateStart,Cur_Periodicity,Cur_Abbreviation,Cur_NameMulti,Cur_Name_EngMulti,Cur_Name_BelMulti,Cur_QuotName_Bel,Cur_QuotName_Eng, Cur_Code, Cur_ParentID,Cur_Name_Bel,Cur_Name_Eng,Cur_QuotName;
         public final ImageView handleView;
 
@@ -136,7 +137,6 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
             Cur_DateEnd = (TextView) itemView.findViewById(R.id.textview8);
 
             viewForeground = itemView.findViewById(R.id.view_foreground);
-            viewBackground = itemView.findViewById(R.id.view_background);
             handleView = (ImageView) itemView.findViewById(R.id.handle);
         }
 

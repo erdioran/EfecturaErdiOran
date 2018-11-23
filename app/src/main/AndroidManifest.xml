@@ -26,11 +26,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".FloatingActionButtonActivity"
-            android:screenOrientation="portrait" >
-
-        </activity>
-
     </application>
 
 

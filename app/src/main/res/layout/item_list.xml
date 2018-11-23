@@ -11,25 +11,6 @@
 
 
     <RelativeLayout
-        android:id="@+id/view_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bg_row_background"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/delete_icon"
-            android:layout_width="@dimen/ic_delete"
-            android:layout_height="@dimen/ic_delete"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/pad10"
-            android:src="@drawable/ic_delete_white_24dp" />
-
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/view_foreground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +40,7 @@
                         android:id="@+id/textview1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/item1"
+                        android:textColor="@color/black"
                         android:textSize="12sp" />
 
                     <TextView
@@ -67,7 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:textColor="@color/item1"
+                        android:textColor="@color/black"
                         android:textSize="12sp" />
 
                 </LinearLayout>
@@ -82,14 +63,14 @@
                         android:id="@+id/textview3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/item1"
+                        android:textColor="@color/black"
                         android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/textview4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/item1"
+                        android:textColor="@color/black"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -104,7 +85,7 @@
                         android:id="@+id/textview5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/item1"
+                        android:textColor="@color/black"
                         android:layout_gravity="center"
                         android:textSize="12sp" />
 
@@ -112,7 +93,7 @@
                         android:id="@+id/textview6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/item1"
+                        android:textColor="@color/black"
                         android:layout_gravity="center"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -129,7 +110,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textColor="@color/item1"
+                        android:textColor="@color/black"
                         android:textSize="12sp" />
 
                     <TextView
@@ -137,7 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textColor="@color/item1"
+                        android:textColor="@color/black"
                         android:textSize="12sp" />
                 </LinearLayout>
                 <ImageView
@@ -170,14 +151,14 @@
                         android:id="@+id/textview9"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/textview10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp"
                         />
 
@@ -185,7 +166,7 @@
                         android:id="@+id/textview11"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp"
                         />
                 </LinearLayout>
@@ -201,7 +182,7 @@
                         android:id="@+id/textview12"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp"
                         />
 
@@ -209,7 +190,7 @@
                         android:id="@+id/textview13"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp"
                         />
 
@@ -217,7 +198,7 @@
                         android:id="@+id/textview14"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp"
                         />
                 </LinearLayout>
@@ -233,7 +214,7 @@
                         android:id="@+id/textview15"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp"
                         />
 
@@ -241,7 +222,7 @@
                         android:id="@+id/textview16"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp"
                         />
 
@@ -249,7 +230,7 @@
                         android:id="@+id/textview17"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/description"
+                        android:textColor="@color/black"
                         android:textSize="9sp"
                         />
                 </LinearLayout>
