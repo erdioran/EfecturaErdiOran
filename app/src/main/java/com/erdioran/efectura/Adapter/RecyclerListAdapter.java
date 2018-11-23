@@ -25,6 +25,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
         implements ItemTouchHelperAdapter {
     private List<Item> mList;
 
+
     private final OnStartDragListener mDragStartListener;
 
     public RecyclerListAdapter(List<Item> mList,OnStartDragListener dragStartListener) {
@@ -36,7 +37,14 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-        ItemViewHolder itemViewHolder = new ItemViewHolder(view);
+        final ItemViewHolder itemViewHolder = new ItemViewHolder(view);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         return itemViewHolder;
     }
 
@@ -72,16 +80,16 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
 
 
-        // Start a drag whenever the handle view it touched
-        holder.handleView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(holder);
-                }
-                return false;
-            }
-        });
+//        // Start a drag whenever the handle view it touched
+//        holder.handleView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+//                    mDragStartListener.onStartDrag(holder);
+//                }
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -114,7 +122,6 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
         public RelativeLayout viewForeground;
         TextView Cur_ID, Cur_Name,Cur_Scale,Cur_DateEnd,Cur_DateStart,Cur_Periodicity,Cur_Abbreviation,Cur_NameMulti,Cur_Name_EngMulti,Cur_Name_BelMulti,Cur_QuotName_Bel,Cur_QuotName_Eng, Cur_Code, Cur_ParentID,Cur_Name_Bel,Cur_Name_Eng,Cur_QuotName;
-        public final ImageView handleView;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -137,7 +144,6 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
             Cur_DateEnd = (TextView) itemView.findViewById(R.id.textview8);
 
             viewForeground = itemView.findViewById(R.id.view_foreground);
-            handleView = (ImageView) itemView.findViewById(R.id.handle);
         }
 
         @Override

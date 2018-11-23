@@ -2,32 +2,28 @@ package com.erdioran.efectura;
 
 
 import android.Manifest;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -38,7 +34,6 @@ import com.erdioran.efectura.Adapter.RecyclerListAdapter;
 import com.erdioran.efectura.Adapter.SimpleItemTouchHelperCallback;
 import com.erdioran.efectura.Interfaces.OnStartDragListener;
 import com.erdioran.efectura.Model.Item;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,14 +42,15 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LocationListener, OnStartDragListener {
+public class MainActivity extends AppCompatActivity implements OnStartDragListener,LocationListener,View.OnClickListener  {
     private RecyclerView recyclerView;
     private ItemTouchHelper mItemTouchHelper;
     private RecyclerListAdapter adapter;
     private List<Item> mList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
-    private FloatingActionButton fab,fabUp;
+
+    private FloatingActionButton fab, fabUp;
 
     private EditText editTextMail;
     private Button cancelButton, sendButton;
@@ -62,9 +58,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private FrameLayout frameLayout;
 
 
-    private LocationManager locationManager;
-    private GoogleApiClient mGoogleApiClient;
-    private String appVer, longitude, latitude, provider;
+    private String appVer;
+    private double latitude ;
+    private double longitude ;
+
+
+    private Location location;
+    LocationManager locationManager;
+    ProgressDialog dialog;
+    Button btnShowLocation;
+
 
 
     @Override
@@ -75,24 +78,117 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         appVer = (BuildConfig.APPLICATION_ID + " | v" + BuildConfig.VERSION_NAME);
         recyclerView = findViewById(R.id.recycler_view);
         fab = findViewById(R.id.fab);
-        fabUp=findViewById(R.id.upFab);
+        fabUp = findViewById(R.id.upFab);
         frameLayout = findViewById(R.id.frameLayout);
-
+        swipeRefreshLayout = findViewById(R.id.swipe_container);
         fabUpButton();
         fabButton();
         data();
         recyclerView();
-        latLog();
 
+
+
+//        swipeRefreshLayout.setDistanceToTriggerSync(Integer.MAX_VALUE);
+        swipeRefreshLayout.setEnabled(false);
 
         Log.d("zzzzz", appVer);
 
+
+
+        btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
+
+
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                        1);
+            }
+        }
+
+
+
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+
+        // show location button click event
+        btnShowLocation.setOnClickListener( this);
+
     }
+
+
+    public void onClick(View view) {
+
+
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                        1);
+            }
+        }
+
+
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.setType("text/email");
+        email.putExtra(Intent.EXTRA_EMAIL, "erdioran@gmail.com");
+        email.putExtra(Intent.EXTRA_EMAIL, "");
+        email.putExtra(Intent.EXTRA_TEXT, appVer +"\nLat: "+String.valueOf(latitude)+" \nLang: "+String.valueOf(longitude));
+        startActivity(Intent.createChooser(email, "Send info"));
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude=location.getLatitude();
+        longitude =location.getLongitude();
+        Log.d("aaaaaa", String.valueOf(latitude+longitude));
+        locationManager.removeUpdates(this);
+
+    }
+
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
+
+
+
+
+
+
+
+
+
 
     private void recyclerView() {
         mList = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         adapter = new RecyclerListAdapter(mList, (OnStartDragListener) this);
         recyclerView.setAdapter(adapter);
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
@@ -117,13 +213,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             @Override
             public void onRefresh() {
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        data();
-                    }
-                }, 500);
+                data();
+
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        swipeRefreshLayout.setRefreshing(false);
+//                        data();
+//                    }
+//                }, 500);
             }
         });
     }
@@ -134,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     @Override
                     public void onResponse(JSONArray response) {
                         if (response == null) {
-                            Toast.makeText(getApplicationContext(), "Couldn't fetch the menu! Pleas try again.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "data null", Toast.LENGTH_LONG).show();
                             return;
 
                         }
@@ -146,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         mList.addAll(items);
 
                         adapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -166,6 +265,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+
+
                 Intent email = new Intent(Intent.ACTION_SEND);
                 email.setType("text/email");
                 email.putExtra(Intent.EXTRA_EMAIL, "erdioran@gmail.com");
@@ -207,97 +310,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         });
     }
 
-
     public void fabUpButton() {
         fabUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LinearLayoutManager  layoutManager =(LinearLayoutManager)recyclerView.getLayoutManager();
-                layoutManager.scrollToPositionWithOffset(0,0);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                layoutManager.scrollToPositionWithOffset(0, 0);
             }
         });
     }
 
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent email = new Intent(Intent.ACTION_SEND);
-//                email.setType("text/email");
-//                email.putExtra(Intent.EXTRA_EMAIL, "erdioran@gmail.com");
-//                email.putExtra(Intent.EXTRA_EMAIL, "");
-//                email.putExtra(Intent.EXTRA_TEXT, appVer);
-//                startActivity(Intent.createChooser(email, "Send info"));
-//            }
-//        });
 
-
-    public void latLog() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setCostAllowed(false);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setSpeedRequired(false);
-        provider = locationManager.getBestProvider(criteria, false);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(provider);
-        if (location != null) {
-            onLocationChanged(location);
-        } else {
-            Log.d("xxxxx", "bulunamadı");
-        }
-    }
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-        double lat = location.getLatitude();
-        double lon = location.getLongitude();
-        Log.d("aaaaa", "aaa");
-        Log.d("abbbbaaaa", String.valueOf(lon));
-        /* textenlem.setText(String.valueOf(log));*/
-        /*     String latlon=latlongdetail(lat,lon);*/
-
-    }
-
-/*    public String latlongdetail(Double lat2,Double lon2){
-List<Adress> adress=
-    }*/
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Toast.makeText(this, "Enable Provider", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Toast.makeText(this, "Disable Provider", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-        locationManager.requestLocationUpdates(provider, 100, 1, this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        locationManager.removeUpdates(this);
-    }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
