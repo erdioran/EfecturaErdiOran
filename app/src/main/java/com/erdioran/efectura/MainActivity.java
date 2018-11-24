@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -27,6 +28,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.erdioran.efectura.Adapter.RecyclerListAdapter;
 import com.erdioran.efectura.Adapter.SimpleItemTouchHelperCallback;
 import com.erdioran.efectura.Interfaces.OnStartDragListener;
+import com.erdioran.efectura.Model.InfoData;
 import com.erdioran.efectura.Model.Item;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -41,18 +43,19 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     private ItemTouchHelper mItemTouchHelper;
     private RecyclerListAdapter adapter;
     private List<Item> mList;
+    private List<InfoData> iList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private FloatingActionButton fab, fabUp;
 
     private FrameLayout frameLayout;
-
+    private PopupWindow mPopupWindow;
 
     private String appVer;
     private double latitude;
     private double longitude;
-
+    private Button okButton;
 
     private Location location;
     LocationListener locationListener;
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         fabUpButton();
         fabButton();
         data();
+    /*    infoData();*/
         recyclerView();
 
         fabUp.hide();
@@ -110,7 +114,51 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         swipeRefreshLayout = findViewById(R.id.swipe_container);
     }
 
+/*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actionbar_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.info:
+                infoClick();
+
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+*/
+
+
+    /*public void infoClick() {
+        iList = new ArrayList<>();
+
+
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View customView = inflater.inflate(R.layout.custom_layout, null);
+        mPopupWindow = new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.update();
+        if (Build.VERSION.SDK_INT >= 21) {
+            mPopupWindow.setElevation(5.0f);
+        }
+        okButton = (Button) customView.findViewById(R.id.okBtn);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPopupWindow.dismiss();
+            }
+        });
+        mPopupWindow.showAtLocation(frameLayout, Gravity.CENTER, 0, 0);
+    }
+*/
     @Override
     public void onLocationChanged(Location location) {
         latitude = location.getLatitude();
@@ -133,6 +181,8 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
 
     @Override
     public void onProviderDisabled(String s) {
+
+
 
     }
 
@@ -244,30 +294,4 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
     }
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.actions_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.send:
-                sendMail();
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        return true;
-    }
-
-    public void sendMail() {
-        Intent intent = new Intent(getApplicationContext(), FloatingActionButtonActivity.class);
-        startActivity(intent);
-    }*/
 }

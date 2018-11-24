@@ -69,18 +69,6 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
         holder.Cur_DateEnd.setText(String.valueOf(item.getCur_DateEnd()));
 
 
-
-
-//        // Start a drag whenever the handle view it touched
-//        holder.handleView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-//                    mDragStartListener.onStartDrag(holder);
-//                }
-//                return false;
-//            }
-//        });
     }
 
     @Override

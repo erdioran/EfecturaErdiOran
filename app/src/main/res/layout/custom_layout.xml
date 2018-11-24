@@ -23,19 +23,6 @@
             android:text="@string/enterMail"
             android:textColor="@color/black"
             android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/editTextMail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ems="12"
-            android:textAlignment="center"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:backgroundTint="@color/black"
-            android:textColor="@color/black"
-            android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,21 +34,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/cancelBtn"
+            android:id="@+id/okBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/pad30"
             android:layout_marginRight="@dimen/pad30"
             android:background="@color/white"
-            android:text="@string/cancel" />
+            android:text="@string/Ok" />
 
-        <Button
-            android:id="@+id/sendBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/pad30"
-            android:background="@color/white"
-            android:text="@string/send" />
     </LinearLayout>
 
 </LinearLayout>

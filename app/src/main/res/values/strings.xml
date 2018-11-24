@@ -8,4 +8,6 @@
     <string name="email">Mail</string>
     <string name="enterMail">Enter your email</string>
     <string name="cancel">Cancel</string>
+    <string name="info">Info</string>
+    <string name="Ok">ok</string>
 </resources>
