@@ -2,9 +2,8 @@ package com.erdioran.efectura;
 
 
 import android.Manifest;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,9 +20,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -42,7 +38,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnStartDragListener,LocationListener,View.OnClickListener  {
+public class MainActivity extends AppCompatActivity implements OnStartDragListener, View.OnClickListener, LocationListener {
     private RecyclerView recyclerView;
     private ItemTouchHelper mItemTouchHelper;
     private RecyclerListAdapter adapter;
@@ -52,22 +48,18 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
 
     private FloatingActionButton fab, fabUp;
 
-    private EditText editTextMail;
-    private Button cancelButton, sendButton;
-    private PopupWindow mPopupWindow;
     private FrameLayout frameLayout;
 
 
     private String appVer;
-    private double latitude ;
-    private double longitude ;
+    private double latitude;
+    private double longitude;
 
 
     private Location location;
+    LocationListener locationListener;
     LocationManager locationManager;
-    ProgressDialog dialog;
     Button btnShowLocation;
-
 
 
     @Override
@@ -75,88 +67,135 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        appVer = (BuildConfig.APPLICATION_ID + " | v" + BuildConfig.VERSION_NAME);
-        recyclerView = findViewById(R.id.recycler_view);
-        fab = findViewById(R.id.fab);
-        fabUp = findViewById(R.id.upFab);
-        frameLayout = findViewById(R.id.frameLayout);
-        swipeRefreshLayout = findViewById(R.id.swipe_container);
+        init();
         fabUpButton();
         fabButton();
         data();
         recyclerView();
 
 
-
 //        swipeRefreshLayout.setDistanceToTriggerSync(Integer.MAX_VALUE);
         swipeRefreshLayout.setEnabled(false);
-
-        Log.d("zzzzz", appVer);
-
 
 
         btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
 
 
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+/*
+        GPSTracker gps = new GPSTracker(this);
+        if(gps.canGetLocation()){
+            latitude = Double.toString(gps.getLatitude());
+            longitude = Double.toString(gps.getLongitude());
+            // \n is for new line
+        }else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gps.showSettingsAlert();
+        }*/
 
-            } else {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
-                        1);
-            }
+
+
+       /* try {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        } catch (SecurityException se) {
+            se.printStackTrace();
         }
+*/
 
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+
+
+        onLocationChanged(location);
+
 
 
         // show location button click event
-        btnShowLocation.setOnClickListener( this);
+        btnShowLocation.setOnClickListener(this);
+
 
     }
 
 
-    public void onClick(View view) {
+
+    public void init() {
+        appVer = (BuildConfig.APPLICATION_ID + " | v" + BuildConfig.VERSION_NAME);
+        recyclerView = findViewById(R.id.recycler_view);
+        fab = findViewById(R.id.fab);
+        fabUp = findViewById(R.id.upFab);
+        frameLayout = findViewById(R.id.frameLayout);
+        swipeRefreshLayout = findViewById(R.id.swipe_container);
+    }
 
 
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-            } else {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
-                        1);
+   /* @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 1) {
+            if (requestCode == 1) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, locationListener);
+                }
             }
         }
 
 
-        Intent email = new Intent(Intent.ACTION_SEND);
-        email.setType("text/email");
-        email.putExtra(Intent.EXTRA_EMAIL, "erdioran@gmail.com");
-        email.putExtra(Intent.EXTRA_EMAIL, "");
-        email.putExtra(Intent.EXTRA_TEXT, appVer +"\nLat: "+String.valueOf(latitude)+" \nLang: "+String.valueOf(longitude));
-        startActivity(Intent.createChooser(email, "Send info"));
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }*/
 
+    public void onClick(View view) {
+
+        try {
+
+           /* if (ContextCompat.checkSelfPermission(MainActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                } else {
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                            1);
+                }
+            }
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+*/
+
+           /* locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);*/
+
+
+            Intent email = new Intent(Intent.ACTION_SEND);
+            email.setType("text/email");
+            email.putExtra(Intent.EXTRA_EMAIL, "erdioran@gmail.com");
+            email.putExtra(Intent.EXTRA_EMAIL, "");
+            email.putExtra(Intent.EXTRA_TEXT, appVer + "\nLat: " + String.valueOf(latitude) + " \nLang: " + String.valueOf(longitude));
+            startActivity(Intent.createChooser(email, "Send info"));
+        } catch (Exception e) {
+            System.out.println("Error" + e.getMessage());
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        latitude=location.getLatitude();
-        longitude =location.getLongitude();
-        Log.d("aaaaaa", String.valueOf(latitude+longitude));
-        locationManager.removeUpdates(this);
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+         locationManager.removeUpdates(this);
+        Log.d("LatLong",String.valueOf(latitude)+String.valueOf(longitude));
+
 
     }
 
@@ -175,15 +214,6 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     public void onProviderDisabled(String s) {
 
     }
-
-
-
-
-
-
-
-
-
 
 
     private void recyclerView() {
@@ -260,13 +290,10 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
 
     public void fabButton() {
 
-        editTextMail = findViewById(R.id.editTextMail);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
 
 
                 Intent email = new Intent(Intent.ACTION_SEND);
@@ -319,7 +346,6 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
             }
         });
     }
-
 
 
     @Override
