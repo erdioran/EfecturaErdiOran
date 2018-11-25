@@ -25,21 +25,21 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
     private final OnStartDragListener mDragStartListener;
 
-    public RecyclerListAdapter(List<Item> mList,OnStartDragListener dragStartListener) {
+    public RecyclerListAdapter(List<Item> mList, OnStartDragListener dragStartListener) {
 
-        this.mList=mList;
+        this.mList = mList;
         mDragStartListener = dragStartListener;
     }
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
         final ItemViewHolder itemViewHolder = new ItemViewHolder(view);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
             }
         });
         return itemViewHolder;
@@ -48,6 +48,8 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     @SuppressLint({"ClickableViewAccessibility", "ResourceAsColor"})
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
+
+
         Item item = mList.get(position);
 
         holder.Cur_ID.setText(String.valueOf(item.getCur_ID()));
@@ -92,35 +94,35 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
         } else {
             return mList.size();
         }
-//        return mItems.size();
+
     }
 
 
-    public static class ItemViewHolder extends RecyclerView.ViewHolder implements
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements
             ItemTouchHelperViewHolder {
 
-        public RelativeLayout viewForeground;
-        TextView Cur_ID, Cur_Name,Cur_Scale,Cur_DateEnd,Cur_DateStart,Cur_Periodicity,Cur_Abbreviation,Cur_NameMulti,Cur_Name_EngMulti,Cur_Name_BelMulti,Cur_QuotName_Bel,Cur_QuotName_Eng, Cur_Code, Cur_ParentID,Cur_Name_Bel,Cur_Name_Eng,Cur_QuotName;
+        RelativeLayout viewForeground;
+        TextView Cur_ID, Cur_Name, Cur_Scale, Cur_DateEnd, Cur_DateStart, Cur_Periodicity, Cur_Abbreviation, Cur_NameMulti, Cur_Name_EngMulti, Cur_Name_BelMulti, Cur_QuotName_Bel, Cur_QuotName_Eng, Cur_Code, Cur_ParentID, Cur_Name_Bel, Cur_Name_Eng, Cur_QuotName;
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
-            Cur_ID = (TextView) itemView.findViewById(R.id.textview1);
-            Cur_ParentID = (TextView) itemView.findViewById(R.id.textview2);
-            Cur_Code = (TextView) itemView.findViewById(R.id.textview3);
-            Cur_Abbreviation = (TextView) itemView.findViewById(R.id.textview4);
-            Cur_Name = (TextView) itemView.findViewById(R.id.textview12);
-            Cur_Name_Bel = (TextView) itemView.findViewById(R.id.textview13);
-            Cur_Name_Eng = (TextView) itemView.findViewById(R.id.textview14);
-            Cur_QuotName = (TextView) itemView.findViewById(R.id.textview9);
-            Cur_QuotName_Bel = (TextView) itemView.findViewById(R.id.textview10);
-            Cur_QuotName_Eng = (TextView) itemView.findViewById(R.id.textview11);
-            Cur_NameMulti = (TextView) itemView.findViewById(R.id.textview15);
-            Cur_Name_BelMulti = (TextView) itemView.findViewById(R.id.textview16);
-            Cur_Name_EngMulti = (TextView) itemView.findViewById(R.id.textview17);
-            Cur_Scale = (TextView) itemView.findViewById(R.id.textview5);
-            Cur_Periodicity = (TextView) itemView.findViewById(R.id.textview6);
-            Cur_DateStart = (TextView) itemView.findViewById(R.id.textview7);
-            Cur_DateEnd = (TextView) itemView.findViewById(R.id.textview8);
+            Cur_ID = itemView.findViewById(R.id.textview1);
+            Cur_ParentID = itemView.findViewById(R.id.textview2);
+            Cur_Code = itemView.findViewById(R.id.textview3);
+            Cur_Abbreviation = itemView.findViewById(R.id.textview4);
+            Cur_Name = itemView.findViewById(R.id.textview12);
+            Cur_Name_Bel = itemView.findViewById(R.id.textview13);
+            Cur_Name_Eng = itemView.findViewById(R.id.textview14);
+            Cur_QuotName = itemView.findViewById(R.id.textview9);
+            Cur_QuotName_Bel = itemView.findViewById(R.id.textview10);
+            Cur_QuotName_Eng = itemView.findViewById(R.id.textview11);
+            Cur_NameMulti = itemView.findViewById(R.id.textview15);
+            Cur_Name_BelMulti = itemView.findViewById(R.id.textview16);
+            Cur_Name_EngMulti = itemView.findViewById(R.id.textview17);
+            Cur_Scale = itemView.findViewById(R.id.textview5);
+            Cur_Periodicity = itemView.findViewById(R.id.textview6);
+            Cur_DateStart = itemView.findViewById(R.id.textview7);
+            Cur_DateEnd = itemView.findViewById(R.id.textview8);
 
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
@@ -132,7 +134,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
         @Override
         public void onItemClear() {
-            itemView.setBackgroundColor(0);
+
         }
     }
 }

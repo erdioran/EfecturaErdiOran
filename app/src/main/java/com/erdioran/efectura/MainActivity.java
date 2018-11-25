@@ -21,10 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -44,7 +41,7 @@ import java.util.List;
 import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity implements OnStartDragListener, LocationListener {
-    private RecyclerView recyclerView, recyclerView2;
+    private RecyclerView recyclerView;
     private ItemTouchHelper mItemTouchHelper;
     private RecyclerListAdapter adapter;
     private List<Item> mList;
@@ -54,17 +51,13 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     private FloatingActionButton fab, fabUp;
 
     private FrameLayout frameLayout;
-    private PopupWindow mPopupWindow;
 
-    private String appVer, jsonResponse, setData;
+    private String appVer;
     private double latitude;
     private double longitude;
-    private Button okButton;
-    private TextView textViewInfo;
     private Location location;
     LocationListener locationListener;
     LocationManager locationManager;
-    Button btnShowLocation;
     Context context = this;
     private static int SPLASH_TIME_OUT = 1500;
 
@@ -96,9 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         });
 
 
-
-
-
+        swipeRefreshLayout.setEnabled(false);
 
 
 //        swipeRefreshLayout.setDistanceToTriggerSync(Integer.MAX_VALUE);
@@ -111,10 +102,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
         onLocationChanged(location);*/
 
-
     }
-
-
 
 
     public void init() {
@@ -122,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         recyclerView = findViewById(R.id.recycler_view);
         fab = findViewById(R.id.fab);
         fabUp = findViewById(R.id.upFab);
-        frameLayout = findViewById(R.id.frameLayout);
+       frameLayout = findViewById(R.id.frameLayout);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
     }
 
@@ -139,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         switch (item.getItemId()) {
             case R.id.info:
                 Intent intent = new Intent(this, InfoActivity.class);
-
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
                 return true;
         }
@@ -174,12 +162,14 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     }
 
 
-
     private void recyclerView() {
+
         mList = new ArrayList<>();
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
         adapter = new RecyclerListAdapter(mList, (OnStartDragListener) this);
         recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
@@ -197,21 +187,21 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         });
 
 
-       /* swipeRefreshLayout = findViewById(R.id.swipe_container);
+        swipeRefreshLayout = findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                data();
 
-
-                new Handler().postDelayed(new Runnable() {
+          /*      new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
                         data();
                     }
-                }, 500);
+                }, 500);*/
             }
-        });*/
+        });
     }
 
     private void data() {
@@ -232,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
                         mList.addAll(items);
 
                         adapter.notifyDataSetChanged();
+
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, new Response.ErrorListener() {
