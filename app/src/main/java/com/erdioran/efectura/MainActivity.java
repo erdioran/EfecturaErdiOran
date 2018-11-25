@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,24 +17,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.erdioran.efectura.Adapter.RecyclerListAdapter;
 import com.erdioran.efectura.Adapter.SimpleItemTouchHelperCallback;
 import com.erdioran.efectura.Interfaces.OnStartDragListener;
@@ -43,14 +38,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity implements OnStartDragListener, LocationListener {
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView,recyclerView2;
     private ItemTouchHelper mItemTouchHelper;
     private RecyclerListAdapter adapter;
     private List<Item> mList;
@@ -72,17 +66,17 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     LocationManager locationManager;
     Button btnShowLocation;
     Context context = this;
-
+    private static int SPLASH_TIME_OUT = 1500;
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        check();
         init();
         fabUpButton();
         fabButton();
         data();
-        infoData();
         recyclerView();
 
         fabUp.hide();
@@ -121,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         fabUp = findViewById(R.id.upFab);
         frameLayout = findViewById(R.id.frameLayout);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
-textViewInfo=findViewById(R.id.textViewInfo);
     }
 
 
@@ -136,44 +129,15 @@ textViewInfo=findViewById(R.id.textViewInfo);
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.info:
-                infoClick();
-
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
+                Intent intent=new Intent(this,InfoActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
 
-    public void infoClick() {
-
-
-
-
-
-
-
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        @SuppressLint("InflateParams") View customView = inflater.inflate(R.layout.custom_layout, null);
-
-        mPopupWindow = new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-textViewInfo.setText(setData);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.update();
-        if (Build.VERSION.SDK_INT >= 21) {
-            mPopupWindow.setElevation(5.0f);
-        }
-        okButton = (Button) customView.findViewById(R.id.okBtn);
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPopupWindow.dismiss();
-            }
-        });
-        mPopupWindow.showAtLocation(frameLayout, Gravity.CENTER, 0, 0);
-    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -272,51 +236,6 @@ textViewInfo.setText(setData);
         MyApplication.getInstance().addToRequestQueue(request);
     }
 
-    public void infoData() {
-
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Utils.API2, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                if (response == null) {
-                    Toast.makeText(getApplicationContext(), "data null", Toast.LENGTH_LONG).show();
-                    return;
-
-                }
-                try {
-
-                    String Cur_ID1 = String.valueOf(response.getInt("Cur_ID"));
-                    String Date1 = response.getString("Date");
-                    String Cur_Abbreviation1 = response.getString("Cur_Abbreviation");
-                    String Cur_Scale1 = String.valueOf(response.getInt("Cur_Scale"));
-                    String Cur_Name1 = response.getString("Cur_Name");
-                    String Cur_OfficialRate1 = String.valueOf(response.getInt("Cur_OfficialRate"));
-
-                    Log.d("eeeeasad", Cur_ID1);
-                    jsonResponse = Cur_ID1+Cur_Name1;
-                    jsonResponse += "Name: " + Cur_ID1 + "\n\n";
-                    jsonResponse += "Email: " + Date1 + "\n\n";
-                    jsonResponse += "Home: " + Cur_Abbreviation1 + "\n\n";
-                    jsonResponse += "Mobile: " + Cur_Scale1 + "\n\n";
-                    jsonResponse += "Mobile: " + Cur_Name1 + "\n\n";
-                    jsonResponse += "Mobile: " + Cur_OfficialRate1 + "\n\n";
-                    setData.setText(jsonResponse);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        MyApplication.getInstance().addToRequestQueue(jsonObjectRequest);
-    }
 
     public void fabButton() {
 
@@ -353,5 +272,30 @@ textViewInfo.setText(setData);
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
+    }
+
+
+
+    @SuppressLint("WrongConstant")
+    public void check() {
+        Timer t = new Timer();
+        boolean checkConnection = new NetworkCheck().checkConnection(this);
+        if (checkConnection) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    check();
+                }
+            }, 4000);
+        } else {
+            Toast.makeText(MainActivity.this,
+                    "Connection Not Found", SPLASH_TIME_OUT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    check();
+                }
+            }, 2000);
+        }
     }
 }
