@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity implements OnStartDragListener, LocationListener {
-    private RecyclerView recyclerView,recyclerView2;
+    private RecyclerView recyclerView, recyclerView2;
     private ItemTouchHelper mItemTouchHelper;
     private RecyclerListAdapter adapter;
     private List<Item> mList;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     private FrameLayout frameLayout;
     private PopupWindow mPopupWindow;
 
-    private String appVer, jsonResponse,setData;
+    private String appVer, jsonResponse, setData;
     private double latitude;
     private double longitude;
     private Button okButton;
@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     Button btnShowLocation;
     Context context = this;
     private static int SPLASH_TIME_OUT = 1500;
+
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +96,13 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         });
 
 
+
+
+
+
+
 //        swipeRefreshLayout.setDistanceToTriggerSync(Integer.MAX_VALUE);
-        swipeRefreshLayout.setEnabled(false);
+
 
 
       /*  locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -107,6 +113,9 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
 
 
     }
+
+
+
 
     public void init() {
         appVer = (BuildConfig.APPLICATION_ID + " | v" + BuildConfig.VERSION_NAME);
@@ -129,14 +138,13 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.info:
-                Intent intent=new Intent(this,InfoActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                Intent intent = new Intent(this, InfoActivity.class);
+
                 startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -165,6 +173,8 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
 
     }
 
+
+
     private void recyclerView() {
         mList = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -187,22 +197,21 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         });
 
 
-        swipeRefreshLayout = findViewById(R.id.swipe_container);
+       /* swipeRefreshLayout = findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                data();
 
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        swipeRefreshLayout.setRefreshing(false);
-//                        data();
-//                    }
-//                }, 500);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        data();
+                    }
+                }, 500);
             }
-        });
+        });*/
     }
 
     private void data() {
@@ -273,7 +282,6 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
     }
-
 
 
     @SuppressLint("WrongConstant")
