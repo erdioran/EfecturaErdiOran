@@ -2,6 +2,7 @@ package com.erdioran.efectura.Adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,14 @@ import com.erdioran.efectura.Interfaces.OnStartDragListener;
 import com.erdioran.efectura.Model.Item;
 import com.erdioran.efectura.R;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapter.ItemViewHolder>
         implements ItemTouchHelperAdapter {
     private List<Item> mList;
+    private LayoutInflater layoutInflater;
 
 
     private final OnStartDragListener mDragStartListener;
@@ -29,7 +32,11 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
         this.mList = mList;
         mDragStartListener = dragStartListener;
+
     }
+
+
+
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,7 +57,10 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
 
 
+
+
         Item item = mList.get(position);
+
 
         holder.Cur_ID.setText(String.valueOf(item.getCur_ID()));
         holder.Cur_ParentID.setText(String.valueOf(item.getCur_ParentID()));
@@ -84,6 +94,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
         Collections.swap(mList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
+
         return true;
     }
 

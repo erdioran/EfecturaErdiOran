@@ -11,7 +11,10 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +25,7 @@ public class SplashScreen extends AppCompatActivity {
     NetworkInfo info;
     LocationManager locationManager;
     LocationListener locationListener;
+    ImageView imageView;
     private static int SPLASH_TIME_OUT = 1500;
 
 
@@ -30,9 +34,14 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        imageView=(ImageView) findViewById(R.id.startLogo);
+
+        Picasso.with(this).load(R.drawable.logo).placeholder(R.drawable.logo).resize(200,200).into(imageView);
         ActionBar actionBar=getSupportActionBar();
         actionBar.hide();
         check();
+
 
 
     }

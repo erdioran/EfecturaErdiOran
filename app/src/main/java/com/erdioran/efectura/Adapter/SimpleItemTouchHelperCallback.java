@@ -1,5 +1,6 @@
 package com.erdioran.efectura.Adapter;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,10 +8,12 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.erdioran.efectura.Interfaces.ItemTouchHelperAdapter;
 import com.erdioran.efectura.Interfaces.ItemTouchHelperViewHolder;
+import com.erdioran.efectura.R;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     public static final float ALPHA_FULL = 1.0f;
+
 
     private final ItemTouchHelperAdapter mAdapter;
 
@@ -60,6 +63,8 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+
+
             final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
             viewHolder.itemView.setAlpha(alpha);
             viewHolder.itemView.setTranslationX(dX);
